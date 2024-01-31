@@ -9,3 +9,13 @@ const backend = (
     ? 'http://localhost'
     : 'http://ec2-18-223-71-133.us-east-2.compute.amazonaws.com'
 ) + ':3000/';
+
+function getUrlParam(param) {
+  const href = window.location.href;
+  const parts = href.split('?');
+  const params = parts[1].split('&');
+  for (let i = 0; i < params.length; i++) {
+    const keyValue = params[i].split('=');
+    if (keyValue[0] === param) return keyValue[1];
+  }
+}
