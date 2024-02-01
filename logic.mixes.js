@@ -1,4 +1,4 @@
-function startApp() {
+function loadMixListPage() {
     ajax(
         'fetch/mix-list',
         'GET',
@@ -37,7 +37,8 @@ function fetchMix(mixNum, mixName) {
         { mixNum, mixName },
         (response) => {
             localStorage.setItem(mixNum, response);
-            window.location.href = `mix.html?mix=${mixNum}`;
+            localStorage.setItem('mix name', mixName);
+            window.location.href = `${frontend}/mix.html?mix=${mixNum}`;
         },
         (error) => {
             console.log(error);
@@ -59,11 +60,18 @@ function injectTracks(tracks) {
     if (!Array.isArray(tracks)) tracks = JSON.parse(tracks);
     const tracksContainer = document.querySelector('#tracks-container');
 
-    tracks.forEach(t => {
+    tracks.forEach((t, i) => {
         const li = document.createElement('li');
-        li.innerHTML = t;
+        li.innerHTML = `<a href="javascript:playTrack(${i})">${t}</a>`;
         tracksContainer.append(li);
     });
 }
 
-startApp();
+function playTrack(index) {
+    const mixNum = getUrlParam('mix');
+    const mixName = localStorage.getItem('mix name');
+    const tracks = document.querySelectorAll('#tracks-container li a');
+    const fileName = tracks[index].innerHTML;
+    const audio = new Audio(`${frontend}/music/${mixNum}.${mixName}/${fileName}`);
+    audio.play();
+}

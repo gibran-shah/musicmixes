@@ -17,6 +17,7 @@
     width: 60%;
     min-height: 500px;
     height: 50vh;
+    padding: 30px;
 
     background-color: white;
     border: 1px solid black;
@@ -26,4 +27,6 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
