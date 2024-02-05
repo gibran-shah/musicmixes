@@ -1,3 +1,5 @@
+/*** home page ***/
+
 .background-container {
     margin: 0;
     padding: 0;
@@ -29,6 +31,16 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
+}
+
+/*** track list ***/
+#tracks-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#tracks-container a {
+    text-decoration: none;
 }
 
 /*** player ***/

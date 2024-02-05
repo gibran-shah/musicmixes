@@ -58,12 +58,12 @@ function loadMixPage() {
 
 function injectTracks(tracks) {
     if (!Array.isArray(tracks)) tracks = JSON.parse(tracks);
-    const tracksContainer = document.querySelector('#tracks-container');
+    const tracksUL = document.querySelector('#tracks-container ul');
 
     tracks.forEach((t, i) => {
         const li = document.createElement('li');
         li.innerHTML = `<a href="javascript:playTrack(${i})">${i+1}. ${t.artist} - ${t.title}</a>`;
-        tracksContainer.append(li);
+        tracksUL.append(li);
     });
 }
 
