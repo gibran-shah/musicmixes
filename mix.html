@@ -1,13 +1,40 @@
 <htlm>
     <head>
         <title>Mix 123</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+        <link href="./styles.css" rel="stylesheet" />
         <script rel="javascript" src="./globals.mixes.js"></script>
         <script rel="javascript" src="./ajax.mixes.js"></script>
         <script rel="javascript" src="./logic.mixes.js"></script>
     </head>
     <body onload="loadMixPage()">
-        <div id="tracks-container" style="width: 1000px; border: 1px solid red;">
+        <div id="tracks-container" style="border: 1px solid red;">
             <ul><!-- tracks injected here --></ul>
+        </div>
+        <div class="player-container" style="border: 1px solid red;">
+            <div class="player">
+                <div class="volume-control-container" style="border: 1px solid blue;">
+                </div>
+                <div class="button-and-track-controls-container" style="border: 1px solid blue;">
+                    <div class="player-buttons-container" style="border: 1px solid black;">
+                        <div class="player-button" onclick="previousTrackClicked()">
+                            <i class="fa-solid fa-backward-fast"></i>
+                        </div>
+                        <div class="player-button" onclick="trackStartClicked()">
+                            <i class="fa-solid fa-backward"></i>
+                        </div>
+                        <div class="player-button" onclick="stopClicked()">
+                            <i class="fa-solid fa-stop"></i>
+                        </div>
+                        <div class="player-button play" onclick="playPauseClicked()">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div class="player-button" onclick="nextTrackClicked()">
+                            <i class="fa-solid fa-forward-fast"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </htlm>

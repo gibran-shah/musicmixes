@@ -62,7 +62,7 @@ function injectTracks(tracks) {
 
     tracks.forEach((t, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `<a href="javascript:playTrack(${i})">${t}</a>`;
+        li.innerHTML = `<a href="javascript:playTrack(${i})">${i+1}. ${t.artist} - ${t.title}</a>`;
         tracksContainer.append(li);
     });
 }
@@ -74,4 +74,24 @@ function playTrack(index) {
     const fileName = tracks[index].innerHTML;
     const audio = new Audio(`${frontend}/music/${mixNum}.${mixName}/${fileName}`);
     audio.play();
+}
+
+function previousTrackClicked() {
+    alert('previous track clicked');
+}
+
+function trackStartClicked() {
+    alert('track start clicked');
+}
+
+function stopClicked() {
+    alert('stop clicked');
+}
+
+function playPauseClicked() {
+    alert('play pause clicked');
+}
+
+function nextTrackClicked() {
+    alert('next track clicked');
 }
