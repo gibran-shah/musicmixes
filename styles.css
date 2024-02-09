@@ -43,6 +43,10 @@
     text-decoration: none;
 }
 
+.current-track {
+    font-weight: bold;
+}
+
 /*** player ***/
 .player-container {
     margin-top: 10px;

@@ -69,18 +69,39 @@ function injectTracks() {
 
     tracks.forEach((t, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `<a href="javascript:playTrack(${i})">${i+1}. ${t.artist} - ${t.title}</a>`;
+        li.id = `track${i}`;
+        li.innerHTML = `<a href="javascript:trackClicked(${i})">${i+1}. ${t.artist} - ${t.title}</a>`;
         tracksUL.append(li);
     });
+}
+
+function trackClicked(index) {
+    trackIndex = index;
+    playTrack();
 }
 
 function playTrack() {
     const track = tracks[trackIndex];
     const { mixNum, mixName, filename } = track;
+
+    highlightCurrentTrack();
+
+    if (howl) howl.unload();
     howl = new Howl({
         src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
     });
     howl.play();
+}
+
+function highlightCurrentTrack() {
+    const tracks = document.querySelectorAll('#tracks-container li');
+    tracks.forEach(t => {
+        if (t.id === `track${trackIndex}`) {
+            t.classList.add('current-track');
+        } else {
+            t.classList.remove('current-track');
+        }
+    });
 }
 
 function previousTrackClicked() {
