@@ -1,5 +1,6 @@
 let tracks = [];
 let trackIndex = 0;
+let howl;
 
 function loadMixListPage() {
     ajax(
@@ -76,8 +77,10 @@ function injectTracks() {
 function playTrack() {
     const track = tracks[trackIndex];
     const { mixNum, mixName, filename } = track;
-    const audio = new Audio(`${frontend}/music/${mixNum}.${mixName}/${filename}`);
-    audio.play();
+    howl = new Howl({
+        src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
+    });
+    howl.play();
 }
 
 function previousTrackClicked() {
