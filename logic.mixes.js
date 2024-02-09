@@ -131,11 +131,21 @@ function trackEnded() {
 }
 
 function previousTrackClicked() {
-    alert('previous track clicked');
+    if (trackIndex > 0) trackIndex--;
+    hideCurrentTrackIcon();
+    highlightCurrentTrack();
+    if (howl) {
+        const wasPlaying = howl.playing();
+        howl.stop();
+        wasPlaying && playTrack();
+    }
 }
 
 function trackStartClicked() {
-    alert('track start clicked');
+    if (howl) {
+        if (howl.playing()) playTrack();
+        else if (howl.seek() > 0) howl.seek(0);
+    }
 }
 
 function stopClicked() {
@@ -151,7 +161,14 @@ function playPauseClicked() {
 }
 
 function nextTrackClicked() {
-    alert('next track clicked');
+    if (trackIndex < tracks.length - 1) trackIndex++;
+    hideCurrentTrackIcon();
+    highlightCurrentTrack();
+    if (howl) {
+        const wasPlaying = howl.playing();
+        howl.stop();
+        wasPlaying && playTrack();
+    }
 }
 
 function togglePlayPause() {
