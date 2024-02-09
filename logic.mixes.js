@@ -1,3 +1,6 @@
+let tracks = [];
+let trackIndex = 0;
+
 function loadMixListPage() {
     ajax(
         'fetch/mix-list',
@@ -24,21 +27,35 @@ function injectMixList(list) {
     list.forEach(l => {
         const link = document.createElement('a');
         link.setAttribute('href', 'javascript:void(0)');
-        link.onclick = () => fetchMix(l[0], l[1]);
+        link.onclick = () => mixClicked(l[0]);
         link.innerHTML = l[1];
         foreGroundContainer.appendChild(link);
     });
 }
 
-function fetchMix(mixNum, mixName) {
+function mixClicked(mixNum, mixName) {
+    window.location.href = `${frontend}/mix.html?mix=${mixNum}`;
+}
+
+function loadMixPage() {
+    const mixNum = getUrlParam('mix');
+    if (mixNum) {
+        fetchMix(mixNum);
+    } else {
+        console.log('missing mix param');
+    }
+}
+
+function fetchMix(mixNum) {
     ajax(
         'fetch/mix',
         'GET',
-        { mixNum, mixName },
+        { mixNum },
         (response) => {
-            localStorage.setItem(mixNum, response);
-            localStorage.setItem('mix name', mixName);
-            window.location.href = `${frontend}/mix.html?mix=${mixNum}`;
+            tracks = JSON.parse(response);
+            tracks = tracks.sort((t1, t2) => t1.trackNum > t2.trackNum ? 1 : -1);
+            trackIndex = 0;
+            injectTracks();
         },
         (error) => {
             console.log(error);
@@ -46,18 +63,7 @@ function fetchMix(mixNum, mixName) {
     );
 }
 
-function loadMixPage() {
-    const mixNum = getUrlParam('mix');
-    if (mixNum) {
-        const tracks = localStorage.getItem(mixNum);
-        injectTracks(tracks);
-    } else {
-        console.log('missing mix param');
-    }
-}
-
-function injectTracks(tracks) {
-    if (!Array.isArray(tracks)) tracks = JSON.parse(tracks);
+function injectTracks() {
     const tracksUL = document.querySelector('#tracks-container ul');
 
     tracks.forEach((t, i) => {
@@ -67,12 +73,10 @@ function injectTracks(tracks) {
     });
 }
 
-function playTrack(index) {
-    const mixNum = getUrlParam('mix');
-    const mixName = localStorage.getItem('mix name');
-    const tracks = document.querySelectorAll('#tracks-container li a');
-    const fileName = tracks[index].innerHTML;
-    const audio = new Audio(`${frontend}/music/${mixNum}.${mixName}/${fileName}`);
+function playTrack() {
+    const track = tracks[trackIndex];
+    const { mixNum, mixName, filename } = track;
+    const audio = new Audio(`${frontend}/music/${mixNum}.${mixName}/${filename}`);
     audio.play();
 }
 
