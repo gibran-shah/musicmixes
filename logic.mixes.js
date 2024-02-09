@@ -91,13 +91,13 @@ function playTrack() {
         src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
     });
     howl.on('end', trackEnded);
+    howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
+    howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
+    howl.on('stop', () => { hideCurrentTrackIcon(); togglePlayPause() });
     howl.play();
 }
 
 function highlightCurrentTrack() {
-    const previousTrackIcon = document.querySelector('.current-track-icon');
-    if (previousTrackIcon) previousTrackIcon.remove();
-
     const tracks = document.querySelectorAll('#tracks-container li');
     tracks.forEach(t => {
         if (t.id === `track${trackIndex}`) {
@@ -111,9 +111,23 @@ function highlightCurrentTrack() {
     });
 }
 
+function showCurrentTrackIcon() {
+    hideCurrentTrackIcon();
+
+    const tracks = document.querySelectorAll('#tracks-container li');
+    const currentTrack = tracks[trackIndex];
+    const currentTrackIcon = document.createElement('i');
+    currentTrackIcon.classList.add('fa-solid', 'fa-volume-high', 'current-track-icon');
+    currentTrack.append(currentTrackIcon);
+}
+
+function hideCurrentTrackIcon() {
+    const previousTrackIcon = document.querySelector('.current-track-icon');
+    if (previousTrackIcon) previousTrackIcon.remove();
+}
+
 function trackEnded() {
-    const currentTrackIcon = document.querySelector('.current-track-icon');
-    currentTrackIcon.remove();
+    hideCurrentTrackIcon();
 }
 
 function previousTrackClicked() {
@@ -125,13 +139,31 @@ function trackStartClicked() {
 }
 
 function stopClicked() {
-    alert('stop clicked');
+    if (howl) howl.stop();
 }
 
 function playPauseClicked() {
-    alert('play pause clicked');
+    if (howl) {
+        if (howl.playing()) howl.pause();
+        else if (howl.seek() > 0) howl.play();
+        else playTrack();
+    } else playTrack();
 }
 
 function nextTrackClicked() {
     alert('next track clicked');
+}
+
+function togglePlayPause() {
+    const playPauseButton = document.querySelector('#play-pause-button');
+
+    if (howl) {
+        if (howl.playing()) {
+            playPauseButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        } else {
+            playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>'
+        }
+    } else {
+        playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>'
+    }
 }
