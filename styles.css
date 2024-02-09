@@ -47,6 +47,19 @@
     font-weight: bold;
 }
 
+.current-track-icon {
+    margin-left: 5px;
+    animation-name: fade-in-out;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fade-in-out {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 /*** player ***/
 .player-container {
     margin-top: 10px;

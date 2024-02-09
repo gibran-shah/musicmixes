@@ -94,10 +94,16 @@ function playTrack() {
 }
 
 function highlightCurrentTrack() {
+    const previousTrackIcon = document.querySelector('.current-track-icon');
+    if (previousTrackIcon) previousTrackIcon.remove();
+
     const tracks = document.querySelectorAll('#tracks-container li');
     tracks.forEach(t => {
         if (t.id === `track${trackIndex}`) {
             t.classList.add('current-track');
+            const currentTrackIcon = document.createElement('i');
+            currentTrackIcon.classList.add('fa-solid', 'fa-volume-high', 'current-track-icon');
+            t.append(currentTrackIcon);
         } else {
             t.classList.remove('current-track');
         }
