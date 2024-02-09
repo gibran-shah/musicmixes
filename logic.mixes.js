@@ -90,6 +90,7 @@ function playTrack() {
     howl = new Howl({
         src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
     });
+    howl.on('end', trackEnded);
     howl.play();
 }
 
@@ -108,6 +109,11 @@ function highlightCurrentTrack() {
             t.classList.remove('current-track');
         }
     });
+}
+
+function trackEnded() {
+    const currentTrackIcon = document.querySelector('.current-track-icon');
+    currentTrackIcon.remove();
 }
 
 function previousTrackClicked() {
