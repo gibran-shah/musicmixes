@@ -1,6 +1,10 @@
 let tracks = [];
 let trackIndex = 0;
 let howl;
+let repeat = false;
+let continuous = false;
+
+// #region loading
 
 function loadMixListPage() {
     ajax(
@@ -75,6 +79,10 @@ function injectTracks() {
     });
 }
 
+// #endregion loading
+
+// #region playing
+
 function trackClicked(index) {
     trackIndex = index;
     playTrack();
@@ -97,14 +105,49 @@ function playTrack() {
     howl.play();
 }
 
+function trackEnded() {
+    if (continuous) {
+        if (trackIndex < tracks.length - 1)
+            playNextTrack();
+        else if (repeat) playFirstTrack();
+        else hideCurrentTrackIcon();
+    } else if (repeat) {
+        playTrack();
+    } else {
+        hideCurrentTrackIcon();
+    }
+}
+
+function playNextTrack() {
+    if (trackIndex < tracks.length - 1) trackIndex++;
+    else return;
+
+    hideCurrentTrackIcon();
+    highlightCurrentTrack();
+    if (howl) {
+        const wasPlaying = howl.playing();
+        wasPlaying && howl.stop();
+        playTrack();
+    }
+}
+
+function playFirstTrack() {
+    trackIndex = 0;
+
+    hideCurrentTrackIcon();
+    highlightCurrentTrack();
+    if (howl) {
+        const wasPlaying = howl.playing();
+        wasPlaying && howl.stop();
+        playTrack();
+    }
+}
+
 function highlightCurrentTrack() {
     const tracks = document.querySelectorAll('#tracks-container li');
     tracks.forEach(t => {
         if (t.id === `track${trackIndex}`) {
             t.classList.add('current-track');
-            const currentTrackIcon = document.createElement('i');
-            currentTrackIcon.classList.add('fa-solid', 'fa-volume-high', 'current-track-icon');
-            t.append(currentTrackIcon);
         } else {
             t.classList.remove('current-track');
         }
@@ -126,9 +169,9 @@ function hideCurrentTrackIcon() {
     if (previousTrackIcon) previousTrackIcon.remove();
 }
 
-function trackEnded() {
-    hideCurrentTrackIcon();
-}
+// #endregion playing
+
+// #region controls
 
 function previousTrackClicked() {
     if (trackIndex > 0) trackIndex--;
@@ -136,8 +179,8 @@ function previousTrackClicked() {
     highlightCurrentTrack();
     if (howl) {
         const wasPlaying = howl.playing();
-        howl.stop();
-        wasPlaying && playTrack();
+        wasPlaying && howl.stop();
+        playTrack();
     }
 }
 
@@ -161,14 +204,7 @@ function playPauseClicked() {
 }
 
 function nextTrackClicked() {
-    if (trackIndex < tracks.length - 1) trackIndex++;
-    hideCurrentTrackIcon();
-    highlightCurrentTrack();
-    if (howl) {
-        const wasPlaying = howl.playing();
-        howl.stop();
-        wasPlaying && playTrack();
-    }
+    playNextTrack();
 }
 
 function togglePlayPause() {
@@ -184,3 +220,15 @@ function togglePlayPause() {
         playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>'
     }
 }
+
+function repeatCheckboxClicked() {
+    const repeatCheckbox = document.querySelector('#repeat-checkbox');
+    repeat = repeatCheckbox.checked;
+}
+
+function continuousCheckboxClicked() {
+    const continuousCheckbox = document.querySelector('#continuous-checkbox');
+    continuous = continuousCheckbox.checked;
+}
+
+// #endregion controls
