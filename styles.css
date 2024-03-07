@@ -99,7 +99,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 65px;
+    height: 45px;
+    padding-top: 5px;
 }
 
 .player-button {
@@ -126,21 +127,24 @@
 .checkbox-container {
     width: 100%;
     height: 15px;
-    border: 1px solid black;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin: 5px 0;
 }
 
 .checkbox-and-label {
     width: 50%;
 }
 
+.checkbox-and-label input[type=checkbox] {
+    margin-left: 0;
+}
+
 .track-position-container {
     width: 100%;
-    height: 15px;
-    border: 1px solid black;
+    height: 25px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -148,7 +152,7 @@
 }
 
 .position-bar {
-    width: 90%;
+    width: 100%;
     height: 5px;
     border: 1px solid black;
     position: relative;

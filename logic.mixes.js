@@ -116,14 +116,16 @@ function playTrack() {
     howl.on('end', trackEnded);
     howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
+    howl.on('stop', () => trackStopped());
     howl.on('load', () => currentTrackDuration = howl.duration());
-    howl.on('stop', () => {
-        hideCurrentTrackIcon();
-        togglePlayPause();
-        clearInterval(positionBarTimer);
-        initializePositionBar();
-    });
     howl.play();
+}
+
+function trackStopped() {
+    clearInterval(positionBarTimer);
+    hideCurrentTrackIcon();
+    togglePlayPause();
+    initializePositionBar();
 }
 
 function trackEnded() {
