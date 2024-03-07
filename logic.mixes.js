@@ -3,6 +3,8 @@ let trackIndex = 0;
 let howl;
 let repeat = false;
 let continuous = false;
+let positionBarTimer;
+let currentTrackDuration = 0;
 
 // #region loading
 
@@ -46,6 +48,7 @@ function loadMixPage() {
     const mixNum = getUrlParam('mix');
     if (mixNum) {
         fetchMix(mixNum);
+        initializePositionBar();
     } else {
         console.log('missing mix param');
     }
@@ -79,6 +82,14 @@ function injectTracks() {
     });
 }
 
+function initializePositionBar() {
+    const completedBar = document.querySelector('.completed-bar');
+    const positionNob = document.querySelector('.position-nob');
+
+    completedBar.style.width = 0;
+    positionNob.style.left = '-3px';
+}
+
 // #endregion loading
 
 // #region playing
@@ -93,6 +104,10 @@ function playTrack() {
     const { mixNum, mixName, filename } = track;
 
     highlightCurrentTrack();
+    initializePositionBar();
+
+    if (positionBarTimer) clearInterval(positionBarTimer);
+    positionBarTimer = setInterval(() => updatePositionBar(), 1000);
 
     if (howl) howl.unload();
     howl = new Howl({
@@ -101,11 +116,20 @@ function playTrack() {
     howl.on('end', trackEnded);
     howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
-    howl.on('stop', () => { hideCurrentTrackIcon(); togglePlayPause() });
+    howl.on('load', () => currentTrackDuration = howl.duration());
+    howl.on('stop', () => {
+        hideCurrentTrackIcon();
+        togglePlayPause();
+        clearInterval(positionBarTimer);
+        initializePositionBar();
+    });
     howl.play();
 }
 
 function trackEnded() {
+    clearInterval(positionBarTimer);
+    initializePositionBar();
+
     if (continuous) {
         if (trackIndex < tracks.length - 1)
             playNextTrack();
@@ -214,10 +238,10 @@ function togglePlayPause() {
         if (howl.playing()) {
             playPauseButton.innerHTML = '<i class="fa-solid fa-pause"></i>';
         } else {
-            playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>'
+            playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>';
         }
     } else {
-        playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>'
+        playPauseButton.innerHTML = '<i class="fa-solid fa-play"></i>';
     }
 }
 
@@ -230,5 +254,21 @@ function continuousCheckboxClicked() {
     const continuousCheckbox = document.querySelector('#continuous-checkbox');
     continuous = continuousCheckbox.checked;
 }
+
+// #region position bar
+
+function updatePositionBar() {
+    const position = howl.seek();
+    const percentDone = (position / currentTrackDuration) * 100;
+
+    const completedBar = document.querySelector('.completed-bar');
+    const positionNob = document.querySelector('.position-nob');
+
+    const percentString = `${percentDone}%`;
+    completedBar.style.width = percentString;
+    positionNob.style.left = percentString;
+}
+
+// #endregion position bar
 
 // #endregion controls
