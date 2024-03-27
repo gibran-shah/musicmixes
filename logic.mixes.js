@@ -271,6 +271,21 @@ function updatePositionBar() {
     positionNob.style.left = percentString;
 }
 
+function positionNobDragged(event) {
+    const positionBar = document.querySelector('.position-bar');
+    const positionNob = document.querySelector('.position-nob');
+    const completedBar = document.querySelector('.completed-bar');
+
+    const x = event.x - positionBar.offsetLeft;
+
+    positionNob.style.left = x;
+    completedBar.style.width = completedBar.style.left + x;
+}
+
+function positionNobDragEnded(event) {
+    positionNobDragged(event);
+}
+
 // #endregion position bar
 
 // #endregion controls
