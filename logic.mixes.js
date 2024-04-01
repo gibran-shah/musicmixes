@@ -4,6 +4,8 @@ let howl;
 let repeat = false;
 let continuous = false;
 let positionBarTimer;
+let trackInfoTimer;
+let trackInfoScrollTimer;
 let currentTrackDuration = 0;
 
 // #region loading
@@ -105,9 +107,16 @@ function playTrack() {
 
     highlightCurrentTrack();
     initializePositionBar();
+    initializeTrackInfo();
 
     if (positionBarTimer) clearInterval(positionBarTimer);
     positionBarTimer = setInterval(() => updatePositionBar(), 1000);
+
+    if (trackInfoTimer) clearTimeout(trackInfoTimer);
+    if (trackInfoScrollTimer) clearInterval(trackInfoScrollTimer);
+    trackInfoTimer = setTimeout(() => {
+        trackInfoScrollTimer = setInterval(() => updateTrackInfo(), 50);
+    }, 3000);
 
     if (howl) howl.unload();
     howl = new Howl({
@@ -116,13 +125,14 @@ function playTrack() {
     howl.on('end', trackEnded);
     howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
-    howl.on('stop', () => trackStopped());
     howl.on('load', () => currentTrackDuration = howl.duration());
     howl.play();
 }
 
-function trackStopped() {
+function stopTrack() {
+    if (howl) howl.stop();
     clearInterval(positionBarTimer);
+    clearNowPlayingBar();
     hideCurrentTrackIcon();
     togglePlayPause();
     initializePositionBar();
@@ -130,17 +140,22 @@ function trackStopped() {
 
 function trackEnded() {
     clearInterval(positionBarTimer);
+    clearNowPlayingBar();
     initializePositionBar();
 
     if (continuous) {
         if (trackIndex < tracks.length - 1)
             playNextTrack();
         else if (repeat) playFirstTrack();
-        else hideCurrentTrackIcon();
+        else {
+            hideCurrentTrackIcon();
+            togglePlayPause();
+        }
     } else if (repeat) {
         playTrack();
     } else {
         hideCurrentTrackIcon();
+        togglePlayPause();
     }
 }
 
@@ -218,7 +233,7 @@ function trackStartClicked() {
 }
 
 function stopClicked() {
-    if (howl) howl.stop();
+    stopTrack();
 }
 
 function playPauseClicked() {
@@ -289,3 +304,53 @@ function positionNobDragEnded(event) {
 // #endregion position bar
 
 // #endregion controls
+
+// #region track info
+
+function initializeTrackInfo() {
+    const track = tracks[trackIndex];
+    const trackInfo = getTrackInfo(track);
+
+    const trackInfoContainer = document.querySelector('.track-info-container');
+    trackInfoContainer.style.left = 5;
+    trackInfoContainer.innerHTML = `<span>${trackInfo}</span>`;
+
+    const nowPlayingContainer = document.querySelector('.now-playing-container');
+    const npcWidth = nowPlayingContainer.clientWidth;
+    const ticWidth = trackInfoContainer.clientWidth;
+
+    const trackInfoContainer2 = document.querySelector('.track-info-container-2');
+    trackInfoContainer2.style.left = npcWidth > ticWidth ? (npcWidth + 100) : (ticWidth + 100);
+    trackInfoContainer2.innerHTML = `<span>${trackInfo}</span>`;
+}
+
+function getTrackInfo(track) {
+    return `${track.trackNum}. ${track.title} - ${track.artist}`;
+}
+
+function updateTrackInfo() {
+    const trackInfoContainer = document.querySelector('.track-info-container');
+    const left = parseInt(trackInfoContainer.style.left.replace('px', ''));
+    trackInfoContainer.style.left = left - 1;
+
+    const trackInfoContainer2 = document.querySelector('.track-info-container-2');
+    const left2 = parseInt(trackInfoContainer2.style.left.replace('px', ''));
+    trackInfoContainer2.style.left = left2 - 1;
+
+    if (trackInfoContainer2.style.left === '5px') {
+        initializeTrackInfo();
+    }
+}
+
+function clearNowPlayingBar() {
+    clearTimeout(trackInfoTimer);
+    clearInterval(trackInfoScrollTimer);
+
+    const trackInfoContainer = document.querySelector('.track-info-container');
+    trackInfoContainer.innerHTML = '';
+
+    const trackInfoContainer2 = document.querySelector('.track-info-container-2');
+    trackInfoContainer2.innerHTML = '';
+}
+
+// #endregion track info

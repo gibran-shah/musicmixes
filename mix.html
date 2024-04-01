@@ -14,36 +14,42 @@
         </div>
         <div class="player-container">
             <div class="player">
-                <div class="volume-control-container">
+                <div class="volume-and-controls-container">
+                    <div class="volume-control-container">
+                    </div>
+                    <div class="button-and-track-controls-container">
+                        <div class="player-buttons-container">
+                            <div id="previous-track-button" class="player-button" onclick="previousTrackClicked()">
+                                <i class="fa-solid fa-backward-fast"></i>
+                            </div>
+                            <div id="track-start-button" class="player-button" onclick="trackStartClicked()">
+                                <i class="fa-solid fa-backward"></i>
+                            </div>
+                            <div id="stop-button" class="player-button" onclick="stopClicked()">
+                                <i class="fa-solid fa-stop"></i>
+                            </div>
+                            <div id="play-pause-button" class="player-button play" onclick="playPauseClicked()">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div id="next-track-button" class="player-button" onclick="nextTrackClicked()">
+                                <i class="fa-solid fa-forward-fast"></i>
+                            </div>
+                        </div>
+                        <div class="checkbox-container">
+                            <div class="checkbox-and-label"><input id="repeat-checkbox" type="checkbox" onclick="repeatCheckboxClicked()" /><span>Repeat</span></div>
+                            <div class="checkbox-and-label"><input id="continuous-checkbox" type="checkbox" onclick="continuousCheckboxClicked()" /><span>Continuous</span></div>
+                        </div>
+                        <div class="track-position-container">
+                            <div class="position-bar">
+                                <div class="completed-bar"></div>
+                                <div class="position-nob" ondrag="positionNobDragged(event)" ondragend="positionNobDragEnded(event)"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="button-and-track-controls-container">
-                    <div class="player-buttons-container">
-                        <div id="previous-track-button" class="player-button" onclick="previousTrackClicked()">
-                            <i class="fa-solid fa-backward-fast"></i>
-                        </div>
-                        <div id="track-start-button" class="player-button" onclick="trackStartClicked()">
-                            <i class="fa-solid fa-backward"></i>
-                        </div>
-                        <div id="stop-button" class="player-button" onclick="stopClicked()">
-                            <i class="fa-solid fa-stop"></i>
-                        </div>
-                        <div id="play-pause-button" class="player-button play" onclick="playPauseClicked()">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                        <div id="next-track-button" class="player-button" onclick="nextTrackClicked()">
-                            <i class="fa-solid fa-forward-fast"></i>
-                        </div>
-                    </div>
-                    <div class="checkbox-container">
-                        <div class="checkbox-and-label"><input id="repeat-checkbox" type="checkbox" onclick="repeatCheckboxClicked()" /><span>Repeat</span></div>
-                        <div class="checkbox-and-label"><input id="continuous-checkbox" type="checkbox" onclick="continuousCheckboxClicked()" /><span>Continuous</span></div>
-                    </div>
-                    <div class="track-position-container">
-                        <div class="position-bar">
-                            <div class="completed-bar"></div>
-                            <div class="position-nob" ondrag="positionNobDragged(event)" ondragend="positionNobDragEnded(event)"></div>
-                        </div>
-                    </div>
+                <div class="now-playing-container">
+                    <div class="track-info-container"><!-- inject track info here --></div>
+                    <div class="track-info-container-2"><!-- inject 2nd track info here --></div>  
                 </div>
             </div>
         </div>

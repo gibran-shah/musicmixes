@@ -18,7 +18,7 @@ router.get('/mix', async (req, res, next) => {
     const trackMetadata = [];
     for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
-        const trackNum = track.split('.')[0];
+        const trackNum = track.split(' ')[0];
         const metadata = await mm.parseFile(`../music/${mixNum}.${mixName}/${track}`);
         trackMetadata.push({
             mixNum,
