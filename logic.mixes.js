@@ -7,6 +7,8 @@ let positionBarTimer;
 let trackInfoTimer;
 let trackInfoScrollTimer;
 let currentTrackDuration = 0;
+let paused = false;
+let wasPlayingBeforeDrag = false;
 
 // #region loading
 
@@ -127,6 +129,8 @@ function playTrack() {
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
     howl.on('load', () => currentTrackDuration = howl.duration());
     howl.play();
+
+    paused = false;
 }
 
 function stopTrack() {
@@ -238,8 +242,16 @@ function stopClicked() {
 
 function playPauseClicked() {
     if (howl) {
-        if (howl.playing()) howl.pause();
-        else if (howl.seek() > 0) howl.play();
+        if (howl.playing()) {
+            howl.pause();
+            paused = true;
+        }
+        else if (howl.seek() > 0) {
+            howl.play();
+            if (positionBarTimer) clearInterval(positionBarTimer);
+            positionBarTimer = setInterval(() => updatePositionBar(), 1000);
+            paused = false;
+        }
         else playTrack();
     } else playTrack();
 }
@@ -287,20 +299,43 @@ function updatePositionBar() {
 }
 
 function positionNobDragged(event) {
-    const positionBar = document.querySelector('.position-bar');
-    const positionNob = document.querySelector('.position-nob');
-    const completedBar = document.querySelector('.completed-bar');
+    if ((howl && howl.playing()) || paused) {
+        wasPlayingBeforeDrag = wasPlayingBeforeDrag || howl.playing();
+        howl.pause();
+        paused = true;
+        if (positionBarTimer) clearInterval(positionBarTimer);
 
-    const x = event.x - positionBar.offsetLeft;
+        const positionBar = document.querySelector('.position-bar');
+        const positionNob = document.querySelector('.position-nob');
+        const completedBar = document.querySelector('.completed-bar');
 
-    positionNob.style.left = x;
-    completedBar.style.width = completedBar.style.left + x;
+        const rightLimit = positionBar.clientWidth - 8;
+
+        let x = event.x - positionBar.offsetLeft;
+        x = x < -3 ? -3 : x;
+        x = x > rightLimit ? rightLimit : x;
+
+        positionNob.style.left = x;
+        completedBar.style.width = completedBar.style.left + x;
+    }
 }
 
 function positionNobDragEnded(event) {
     positionNobDragged(event);
-}
 
+    const completedBar = document.querySelector('.completed-bar');
+    const positionBar = document.querySelector('.position-bar');
+    const percentComplete = completedBar.clientWidth / positionBar.clientWidth;
+    howl.seek(percentComplete * currentTrackDuration);
+
+    if (wasPlayingBeforeDrag) {
+        wasPlayingBeforeDrag = false;
+        howl.play();
+        positionBarTimer = setInterval(() => updatePositionBar(), 1000);
+        paused = false;
+    }
+}
+ 
 // #endregion position bar
 
 // #endregion controls
