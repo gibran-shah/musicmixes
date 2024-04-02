@@ -87,7 +87,52 @@
 
 .volume-control-container {
     width: 30px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.player-button.volume-button {
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.volume-level-container {
+    width: 100%;
+    flex: 1;
+    margin: 10px 0;
+}
+
+.volume-level-bar {
+    width: 5px;
     height: 100%;
+    border: 1px solid black;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.volume-level {
+    width: 5px;
+    height: 50%;
+    background-color: blue;
+}
+
+.volume-level-nob {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    background-color: black;
+    border-radius: 4px;
+    left: -3px;
+    top: 50%;
 }
 
 .button-and-track-controls-container {
