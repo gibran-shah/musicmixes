@@ -9,6 +9,9 @@ let trackInfoScrollTimer;
 let currentTrackDuration = 0;
 let paused = false;
 let wasPlayingBeforeDrag = false;
+let volume = 0;
+let upperVolumeLimit;
+let lowerVolumeLimit;
 
 // #region loading
 
@@ -68,6 +71,7 @@ function fetchMix(mixNum) {
             tracks = tracks.sort((t1, t2) => t1.trackNum > t2.trackNum ? 1 : -1);
             trackIndex = 0;
             injectTracks();
+            setVolumeLimits();
         },
         (error) => {
             console.log(error);
@@ -124,12 +128,14 @@ function playTrack() {
     howl = new Howl({
         src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
     });
+    initializeVolume();
+
     howl.on('end', trackEnded);
     howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
     howl.on('load', () => currentTrackDuration = howl.duration());
+    
     howl.play();
-
     paused = false;
 }
 
@@ -389,3 +395,41 @@ function clearNowPlayingBar() {
 }
 
 // #endregion track info
+
+// #region volume
+function setVolumeLimits() {
+    const volumeLevelBar = document.querySelector('.volume-level-bar');
+    upperVolumeLimit = volumeLevelBar.offsetTop;
+    lowerVolumeLimit = volumeLevelBar.offsetTop + volumeLevelBar.clientHeight;
+    volumeLevelBar.style.maxHeight = lowerVolumeLimit - upperVolumeLimit;
+}
+
+function initializeVolume() {
+    const volumeLevelBar = document.querySelector('.volume-level-bar');
+    const volumeLevel = document.querySelector('.volume-level');
+    volume = volumeLevel.clientHeight / volumeLevelBar.clientHeight;
+
+    if (howl) howl.volume(volume);
+}
+
+function volumeDrag(event) {
+    const volumeLevel = document.querySelector('.volume-level');
+    const volumeLevelNob = document.querySelector('.volume-level-nob');
+
+    let y = event.y;
+    y = y < upperVolumeLimit ? upperVolumeLimit : y;
+    y = y > lowerVolumeLimit ? lowerVolumeLimit : y;
+
+    volumeLevelNob.style.top = y - upperVolumeLimit - 3;
+    const nobLowerLimit = lowerVolumeLimit - upperVolumeLimit - 8;
+    const nobTop = parseInt(volumeLevelNob.style.top.replace('px', ''));
+    volumeLevelNob.style.top =  nobTop > nobLowerLimit ? nobLowerLimit : nobTop;
+ 
+    volumeLevel.style.height = lowerVolumeLimit - y;
+}
+
+function volumeDragEnd(event) {
+    volumeDrag(event);
+}
+
+// #endregion volume
