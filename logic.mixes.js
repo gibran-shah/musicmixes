@@ -12,6 +12,7 @@ let wasPlayingBeforeDrag = false;
 let volume = 0;
 let upperVolumeLimit;
 let lowerVolumeLimit;
+let muted = false;
 
 // #region loading
 
@@ -405,10 +406,7 @@ function setVolumeLimits() {
 }
 
 function initializeVolume() {
-    const volumeLevelBar = document.querySelector('.volume-level-bar');
-    const volumeLevel = document.querySelector('.volume-level');
-    volume = volumeLevel.clientHeight / volumeLevelBar.clientHeight;
-
+    volume = getCurrentVolume();
     if (howl) howl.volume(volume);
 }
 
@@ -434,6 +432,55 @@ function volumeDrag(event) {
 
 function volumeDragEnd(event) {
     volumeDrag(event);
+}
+
+function volumeClicked() {
+    toggleVolumeIcon();
+    if (muted) {
+        enableVolumeControl();
+        muted = false;
+        volume = getCurrentVolume();
+    } else {
+        disableVolumeControl();
+        muted = true;
+        volume = 0;
+    }
+    if (howl) howl.volume(volume);
+}
+
+function disableVolumeControl() {
+    const volumeLevel = document.querySelector('.volume-level');
+    const volumeLevelNob = document.querySelector('.volume-level-nob');
+
+    volumeLevel.setAttribute('disabled', true);
+    volumeLevelNob.setAttribute('disabled', true);
+    volumeLevelNob.setAttribute('draggable', false);
+    volumeLevelNob.removeAttribute('ondrag');
+    volumeLevelNob.removeAttribute('ondragend');
+}
+
+function enableVolumeControl() {
+    const volumeLevel = document.querySelector('.volume-level');
+    const volumeLevelNob = document.querySelector('.volume-level-nob');
+
+    volumeLevel.removeAttribute('disabled');
+    volumeLevelNob.removeAttribute('disabled');
+    volumeLevelNob.setAttribute('draggable', true);
+    volumeLevelNob.setAttribute('ondrag', 'volumeDrag(event)');
+    volumeLevelNob.setAttribute('ondragend', 'volumeDragEnd(event)');
+}
+
+function toggleVolumeIcon() {
+    const volumeIcon = document.querySelector('.volume-button i');
+    volumeIcon.classList.remove(muted ? 'fa-volume-xmark' : 'fa-volume-high');
+    volumeIcon.classList.add(muted ? 'fa-volume-high' : 'fa-volume-xmark');
+}
+
+function getCurrentVolume() {
+    const volumeLevel = document.querySelector('.volume-level');
+    const volumeLevelBar = document.querySelector('.volume-level-bar');
+
+    return volumeLevel.clientHeight / volumeLevelBar.clientHeight;
 }
 
 // #endregion volume

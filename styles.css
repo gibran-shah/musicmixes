@@ -125,6 +125,10 @@
     background-color: blue;
 }
 
+.volume-level[disabled=true] {
+    background-color: rgb(79, 79, 79);
+}
+
 .volume-level-nob {
     position: absolute;
     width: 11px;
@@ -134,6 +138,11 @@
     left: -3px;
     top: 50%;
     cursor: pointer;
+}
+
+.volume-level-nob[disabled=true] {
+    background-color: rgb(79, 79, 79);
+    cursor: auto;
 }
 
 .button-and-track-controls-container {
