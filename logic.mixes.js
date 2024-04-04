@@ -413,6 +413,7 @@ function initializeVolume() {
 }
 
 function volumeDrag(event) {
+    const volumeLevelBar = document.querySelector('.volume-level-bar');
     const volumeLevel = document.querySelector('.volume-level');
     const volumeLevelNob = document.querySelector('.volume-level-nob');
 
@@ -426,6 +427,9 @@ function volumeDrag(event) {
     volumeLevelNob.style.top =  nobTop > nobLowerLimit ? nobLowerLimit : nobTop;
  
     volumeLevel.style.height = lowerVolumeLimit - y;
+
+    volume = volumeLevel.clientHeight / volumeLevelBar.clientHeight;
+    if (howl) howl.volume(volume);
 }
 
 function volumeDragEnd(event) {
