@@ -6,7 +6,9 @@ let continuous = false;
 let positionBarTimer;
 let trackInfoTimer;
 let trackInfoScrollTimer;
+let trackTimeTimer;
 let currentTrackDuration = 0;
+let currentTrackTime = 0;
 let paused = false;
 let wasPlayingBeforeDrag = false;
 let volume = 0;
@@ -125,16 +127,20 @@ function playTrack() {
         trackInfoScrollTimer = setInterval(() => updateTrackInfo(), 50);
     }, 3000);
 
+    if (trackTimeTimer) clearInterval(trackTimeTimer);
+    trackTimeTimer = setInterval(() => updateTrackTime(), 1000);
+
     if (howl) howl.unload();
     howl = new Howl({
         src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
     });
+
     initializeVolume();
 
     howl.on('end', trackEnded);
     howl.on('play', () => { showCurrentTrackIcon(); togglePlayPause(); });
     howl.on('pause', () => { hideCurrentTrackIcon(); togglePlayPause(); });
-    howl.on('load', () => currentTrackDuration = howl.duration());
+    howl.on('load', () => { currentTrackDuration = howl.duration(); initializeTrackTime(); });
     
     howl.play();
     paused = false;
@@ -144,6 +150,7 @@ function stopTrack() {
     if (howl) howl.stop();
     clearInterval(positionBarTimer);
     clearNowPlayingBar();
+    clearTrackTime();
     hideCurrentTrackIcon();
     togglePlayPause();
     initializePositionBar();
@@ -152,6 +159,7 @@ function stopTrack() {
 function trackEnded() {
     clearInterval(positionBarTimer);
     clearNowPlayingBar();
+    clearTrackTime();
     initializePositionBar();
 
     if (continuous) {
@@ -406,7 +414,7 @@ function setVolumeLimits() {
 }
 
 function initializeVolume() {
-    volume = getCurrentVolume();
+    volume = calculateCurrentVolume();
     if (howl) howl.volume(volume);
 }
 
@@ -439,7 +447,7 @@ function volumeClicked() {
     if (muted) {
         enableVolumeControl();
         muted = false;
-        volume = getCurrentVolume();
+        volume = calculateCurrentVolume();
     } else {
         disableVolumeControl();
         muted = true;
@@ -476,7 +484,7 @@ function toggleVolumeIcon() {
     volumeIcon.classList.add(muted ? 'fa-volume-high' : 'fa-volume-xmark');
 }
 
-function getCurrentVolume() {
+function calculateCurrentVolume() {
     const volumeLevel = document.querySelector('.volume-level');
     const volumeLevelBar = document.querySelector('.volume-level-bar');
 
@@ -484,3 +492,39 @@ function getCurrentVolume() {
 }
 
 // #endregion volume
+
+// #region track time
+
+function initializeTrackTime() {
+    const totalTimeSpan = document.querySelector('.total-time');
+    const timeRemainingSpan = document.querySelector('.time-remaining');
+
+    if (!currentTrackDuration && howl) currentTrackDuration = howl.duration();
+
+    totalTimeSpan.innerHTML = convertTo_mmss(currentTrackDuration);
+    timeRemainingSpan.innerHTML = '0:00';
+}
+
+function convertTo_mmss(duration) {
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor(duration / 60);
+    const seconds = Math.round(duration % 60);
+
+    return `${hours > 0 ? hours+':' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+function updateTrackTime() {
+    const timeRemainingSpan = document.querySelector('.time-remaining');
+    const currentTime = howl.seek();
+    timeRemainingSpan.innerHTML = convertTo_mmss(currentTime);
+}
+
+function clearTrackTime() {
+    const timeRemainingSpan = document.querySelector('.time-remaining');
+    const totalTimeSpan = document.querySelector('.total-time');
+    timeRemainingSpan.innerHTML = '';
+    totalTimeSpan.innerHTML = '';
+    if (trackTimeTimer) clearInterval(trackTimeTimer);
+}
+
+// #endregion track time
