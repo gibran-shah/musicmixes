@@ -4,6 +4,7 @@ let howl;
 let repeat = false;
 let continuous = false;
 let positionBarTimer;
+let positionDragOn = false;
 let trackInfoTimer;
 let trackInfoScrollTimer;
 let trackTimeTimer;
@@ -313,8 +314,17 @@ function updatePositionBar() {
     positionNob.style.left = percentString;
 }
 
+function positionMouseDown(event) {
+    positionDragOn = true;
+}
+
+function positionMouseUp(event) {
+    positionNobDragEnded(event);
+    positionDragOn = false;
+}
+
 function positionNobDragged(event) {
-    if ((howl && howl.playing()) || paused) {
+    if (positionDragOn && ((howl && howl.playing()) || paused)) {
         wasPlayingBeforeDrag = wasPlayingBeforeDrag || howl.playing();
         howl.pause();
         paused = true;
@@ -324,14 +334,20 @@ function positionNobDragged(event) {
         const positionNob = document.querySelector('.position-nob');
         const completedBar = document.querySelector('.completed-bar');
 
-        const rightLimit = positionBar.clientWidth - 8;
+        const leftLimit = 0;
+        const rightLimit = positionBar.clientWidth;
 
         let x = event.x - positionBar.offsetLeft;
-        x = x < -3 ? -3 : x;
+
+        x = x < leftLimit ? leftLimit : x;
         x = x > rightLimit ? rightLimit : x;
 
-        positionNob.style.left = x;
-        completedBar.style.width = completedBar.style.left + x;
+       const halfNob = positionNob.clientWidth / 2;
+
+        positionNob.style.left = Math.max(x - halfNob, 0);
+        completedBar.style.width = x;
+        positionNob.offsetLeft = Math.max(x - halfNob, 0);
+        completedBar.clientWidth = x;
     }
 }
 
@@ -528,3 +544,19 @@ function clearTrackTime() {
 }
 
 // #endregion track time
+
+// #region global event listeners
+
+document.addEventListener('mousemove', event => {
+    if (positionDragOn) {
+        positionNobDragged(event);
+    }
+});
+
+document.addEventListener('mouseup', event => {
+    if (positionDragOn) {
+        positionMouseUp(event);
+    } 
+});
+
+// #endregion global event listeners
