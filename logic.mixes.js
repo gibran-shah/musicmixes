@@ -16,6 +16,7 @@ let volume = 0;
 let upperVolumeLimit;
 let lowerVolumeLimit;
 let muted = false;
+let volumeDragOn = false;
 
 // #region loading
 
@@ -434,6 +435,15 @@ function initializeVolume() {
     if (howl) howl.volume(volume);
 }
 
+function volumeMouseDown(event) {
+    volumeDragOn = true;
+}
+
+function volumeMouseUp(event) {
+    volumeDragEnd(event);
+    volumeDragOn = false;
+}
+
 function volumeDrag(event) {
     const volumeLevelBar = document.querySelector('.volume-level-bar');
     const volumeLevel = document.querySelector('.volume-level');
@@ -548,12 +558,18 @@ function clearTrackTime() {
 // #region global event listeners
 
 document.addEventListener('mousemove', event => {
+    if (volumeDragOn) {
+        volumeDrag(event);
+    }
     if (positionDragOn) {
         positionNobDragged(event);
     }
 });
 
 document.addEventListener('mouseup', event => {
+    if (volumeDragOn) {
+        volumeMouseUp(event);
+    }
     if (positionDragOn) {
         positionMouseUp(event);
     } 
