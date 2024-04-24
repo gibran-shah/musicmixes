@@ -555,24 +555,37 @@ function clearTrackTime() {
 
 // #endregion track time
 
-// #region global event listeners
+// #region back button
 
-document.addEventListener('mousemove', event => {
+function backButtonClicked() {
+    document.removeEventListener('mousemove', mouseMoveListener);
+    document.removeEventListener('mouseup', mouseUpListener);
+    window.location.href = 'index.html';
+}
+
+// #endregion back button
+
+// #region global event listeners
+function mouseMoveListener(event) {
     if (volumeDragOn) {
         volumeDrag(event);
     }
     if (positionDragOn) {
         positionNobDragged(event);
     }
-});
+}
 
-document.addEventListener('mouseup', event => {
+document.addEventListener('mousemove', mouseMoveListener);
+
+function mouseUpListener(event) {
     if (volumeDragOn) {
         volumeMouseUp(event);
     }
     if (positionDragOn) {
         positionMouseUp(event);
     } 
-});
+}
+
+document.addEventListener('mouseup', mouseUpListener);
 
 // #endregion global event listeners

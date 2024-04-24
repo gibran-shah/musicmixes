@@ -267,3 +267,15 @@
     position: absolute;
     white-space: nowrap;
 }
+
+.back-btn-container {
+    width: 115px;
+    padding: 10px 0;
+    color: blue;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
