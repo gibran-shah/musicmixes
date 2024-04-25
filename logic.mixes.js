@@ -134,7 +134,9 @@ function playTrack() {
 
     if (howl) howl.unload();
     howl = new Howl({
-        src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`]
+        src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`],
+        autoplay: true,
+        html5: true
     });
 
     initializeVolume();
