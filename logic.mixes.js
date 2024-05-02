@@ -90,7 +90,12 @@ function injectTracks() {
     tracks.forEach((t, i) => {
         const li = document.createElement('li');
         li.id = `track${i}`;
-        li.innerHTML = `<a href="javascript:trackClicked(${i})">${i+1}. ${t.artist} - ${t.title}</a>`;
+        if (t.artist && t.artist.length && t.title && t.title.length) {
+            songName = `${t.artist} - ${t.title}`;
+        } else {
+            songName = t.filename;
+        }
+        li.innerHTML = `<a href="javascript:trackClicked(${i})">${i+1}. ${songName}</a>`;
         tracksUL.append(li);
     });
 }
