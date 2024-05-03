@@ -25,11 +25,22 @@ router.get('/mix', async (req, res, next) => {
             mixName,
             trackNum,
             filename: track,
+            filenameNoExtension: stripExtension(track),
             title: metadata.common.title,
             artist: metadata.common.artist
         });
     }
     res.send(trackMetadata);
 });
+
+function stripExtension(track) {
+    const trackParts = track.split('.');
+    if (trackParts.length > 1) {
+        trackParts.splice(trackParts.length - 1);
+        return trackParts.join('.');
+    } else {
+        return track;
+    }
+}
 
 module.exports = router;

@@ -90,10 +90,10 @@ function injectTracks() {
     tracks.forEach((t, i) => {
         const li = document.createElement('li');
         li.id = `track${i}`;
-        if (t.artist && t.artist.length && t.title && t.title.length) {
+        if (t.artist?.length && t.title?.length) {
             songName = `${t.artist} - ${t.title}`;
         } else {
-            songName = t.filename;
+            songName = t.filenameNoExtension;
         }
         li.innerHTML = `<a href="javascript:trackClicked(${i})">${i+1}. ${songName}</a>`;
         tracksUL.append(li);
@@ -399,7 +399,13 @@ function initializeTrackInfo() {
 }
 
 function getTrackInfo(track) {
-    return `${track.trackNum}. ${track.title} - ${track.artist}`;
+    let songName;
+    if (track.artist?.length && track.title?.length) {
+        songName = `${track.artist} - ${track.title}`;
+    } else {
+        songName = track.filenameNoExtension;
+    }
+    return `${track.trackNum}. ${songName}`;
 }
 
 function updateTrackInfo() {
