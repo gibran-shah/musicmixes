@@ -42,13 +42,19 @@ function loadMixListPage() {
 }
 
 function injectMixList(list) {
-    const foreGroundContainer = document.querySelector('.foreground-container');
-    list.forEach(l => {
+    const foreGroundInnerContainer = document.querySelector('.foreground-inner-container');
+    list.forEach((l, i) => {
         const link = document.createElement('a');
         link.setAttribute('href', 'javascript:void(0)');
         link.onclick = () => mixClicked(l[0]);
         link.innerHTML = l[1];
-        foreGroundContainer.appendChild(link);
+        foreGroundInnerContainer.appendChild(link);
+
+        if (i < list.length - 1) {
+            const divider = document.createElement('span');
+            divider.innerHTML = '|';
+            foreGroundInnerContainer.appendChild(divider);
+        }
     });
 }
 
