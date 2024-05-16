@@ -1,0 +1,8 @@
+https://howlerjs.com/
+https://www.npmjs.com/package/music-metadata
+
+favicon.ico icons for music mixes and pwv
+dot instead of | for mix divider
+How to suppress last divider in row
+test in all browsers
+listen to all mixes
