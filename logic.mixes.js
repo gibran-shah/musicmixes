@@ -455,7 +455,9 @@ function initializeVolume() {
 }
 
 function volumeMouseDown(event) {
-    volumeDragOn = true;
+    if (!muted) {
+        volumeDragOn = true;
+    }
 }
 
 function volumeMouseUp(event) {
