@@ -509,7 +509,6 @@ function disableVolumeControl() {
 
     volumeLevel.setAttribute('disabled', true);
     volumeLevelNob.setAttribute('disabled', true);
-    volumeLevelNob.setAttribute('draggable', false);
     volumeLevelNob.removeAttribute('ondrag');
     volumeLevelNob.removeAttribute('ondragend');
 }
@@ -520,7 +519,6 @@ function enableVolumeControl() {
 
     volumeLevel.removeAttribute('disabled');
     volumeLevelNob.removeAttribute('disabled');
-    volumeLevelNob.setAttribute('draggable', true);
     volumeLevelNob.setAttribute('ondrag', 'volumeDrag(event)');
     volumeLevelNob.setAttribute('ondragend', 'volumeDragEnd(event)');
 }
