@@ -81,6 +81,7 @@ function fetchMix(mixNum) {
             tracks = JSON.parse(response);
             tracks = tracks.sort((t1, t2) => t1.trackNum > t2.trackNum ? 1 : -1);
             trackIndex = 0;
+            setTitle();
             injectTracks();
             setVolumeLimits();
         },
@@ -88,6 +89,16 @@ function fetchMix(mixNum) {
             console.log(error);
         }
     );
+}
+
+function setTitle() {
+    // title on page
+    const trackTitle = document.querySelector('.track-title');
+    trackTitle.innerHTML = tracks[0].mixName;
+
+    // title in browser tab header
+    const title = document.querySelector('title');
+    title.innerHTML = tracks[0].mixName;
 }
 
 function injectTracks() {

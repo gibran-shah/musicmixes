@@ -46,6 +46,12 @@
 }
 
 /*** track list ***/
+.track-title {
+    color: blue;
+    font-weight: bold;
+    font-size: 20px;
+}
+
 #tracks-container ul {
     list-style-type: none;
     padding: 0;
