@@ -27,12 +27,15 @@ function loadMixListPage() {
         null,
         (response) => {
             const list = JSON.parse(response);
-            const groomedList = list.map(item => item.split('.'))
-                .sort((item1, item2) => {
-                    const num1 = parseInt(item1[0], 10);
-                    const num2 = parseInt(item2[0], 10);
-                    return num1 > num2 ? 1 : -1;
-                });
+            const groomedList = list.map(item => {
+                const parts = item.split('.');
+				const mixNum = parts.splice(0, 1);
+				return [mixNum, parts.join('.')];
+            }).sort((item1, item2) => {
+                const num1 = parseInt(item1[0], 10);
+                const num2 = parseInt(item2[0], 10);
+                return num1 > num2 ? 1 : -1;
+            });
             injectMixList(groomedList);
         },
         (error) => {
