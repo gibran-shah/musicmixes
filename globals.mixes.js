@@ -2,7 +2,7 @@ const hostname = window.location.hostname;
 const frontend = (
   (hostname === '127.0.0.1' || hostname === 'localhost')
     ? `http://${hostname}:5501`
-    : 'http://planetshah.com/mixes'
+    : 'http://mixes.planetshah.com'
 );
 const backend = (
   (hostname === '127.0.0.1' || hostname === 'localhost')

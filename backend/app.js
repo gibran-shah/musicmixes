@@ -12,10 +12,8 @@ const port = process.env.PORT;
 
 const corsOptions = {
     origin: [
-		'http://www.planetshah.com',
-		'https://www.planetshah.com',
-		'http://planetshah.com',
-		'https://planetshah.com',
+		'http://mixes.planetshah.com',
+		'https://mixes.planetshah.com',
 		'http://127.0.0.1:5501',
 		'http://localhost:5501'
 	],
