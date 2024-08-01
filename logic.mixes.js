@@ -46,6 +46,8 @@ function loadMixListPage() {
 
 function injectMixList(list) {
     const foreGroundInnerContainer = document.querySelector('.foreground-inner-container');
+    let previousLink, divider;
+
     list.forEach((l, i) => {
         const link = document.createElement('a');
         link.setAttribute('href', 'javascript:void(0)');
@@ -53,10 +55,25 @@ function injectMixList(list) {
         link.innerHTML = l[1];
         foreGroundInnerContainer.appendChild(link);
 
-        if (i < list.length - 1) {
-            const divider = document.createElement('span');
-            divider.innerHTML = '|';
-            foreGroundInnerContainer.appendChild(divider);
+        if (list.length > 1) {
+            if (
+                previousLink &&
+                previousLink.offsetTop === link.offsetTop &&
+                i < list.length - 1
+            ) {
+                divider = document.createElement('span');
+                divider.innerHTML = '|';
+                previousLink.after(divider);
+            }
+
+            previousLink = link;
+
+            // if (i < list.length - 1) {
+            //     divider = document.createElement('span');
+            //     divider.classList.add('divider');
+            //     divider.innerHTML = '&bull;';
+            //     foreGroundInnerContainer.appendChild(divider);
+            // }
         }
     });
 }
@@ -159,7 +176,7 @@ function playTrack() {
 
     if (howl) howl.unload();
     howl = new Howl({
-        src: [`${frontend}/music/${mixNum}.${mixName}/${filename}`],
+        src: [encodeURI(`${frontend}/music/${mixNum}.${mixName}/${filename}`)],
         autoplay: true,
         html5: true
     });
