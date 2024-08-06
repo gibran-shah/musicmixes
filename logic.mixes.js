@@ -176,7 +176,7 @@ function playTrack() {
 
     if (howl) howl.unload();
     howl = new Howl({
-        src: [encodeURI(`${frontend}/music/${mixNum}.${mixName}/${filename}`)],
+        src: [`${frontend}/music/${mixNum}.${mixName}/${encodeURIComponent(filename)}`],
         autoplay: true,
         html5: true
     });
