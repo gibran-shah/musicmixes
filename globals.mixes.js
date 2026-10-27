@@ -2,13 +2,14 @@ const hostname = window.location.hostname;
 const frontend = (
   (hostname === '127.0.0.1' || hostname === 'localhost')
     ? `http://${hostname}:5501`
-    : 'http://mixes.planetshah.com'
+    : 'https://mixes.planetshah.com'
 );
+
 const backend = (
   (hostname === '127.0.0.1' || hostname === 'localhost')
-    ? `http://${hostname}`
-    : 'http://ec2-18-223-71-133.us-east-2.compute.amazonaws.com'
-) + ':3002/';
+    ? `http://${hostname}:3002`
+    : 'https://mixes.planetshah.com'
+) + '/';
 
 function getUrlParam(param) {
   const href = window.location.href;
